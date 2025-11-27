@@ -8,3 +8,11 @@ export interface LoginRequest extends Request {
     password: string;
   };
 }
+
+export interface CreateUserRequest extends Request {
+  body: User;
+}
+
+export interface ProductsRequest extends Request {
+  body: Product;
+}

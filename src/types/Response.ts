@@ -17,10 +17,6 @@ export interface SuccessUserResponseBody {
   data: User | User[];
 }
 
-export interface SuccessUserResponse extends Response {
-  message: string;
-  data: User | User[];
-}
 export interface LoginResponseBody {
   message: string;
   data?: string; // 例如 token
