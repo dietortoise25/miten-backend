@@ -1,4 +1,4 @@
-import express from "express";
+import express, { type Request, Response, NextFunction } from "express";
 import cors from "cors";
 
 import userRouter from "./routes/user.route.ts";
@@ -22,7 +22,7 @@ app.use("/v1", userRouter);
 
 app.use("/v1", productForCustomerRouter);
 
-app.use(async (req, res, next): Promise<void> => {
+app.use(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const authorization = req.headers.authorization;
   if (!authorization) {
     (res as any).status(401).json({
