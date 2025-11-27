@@ -6,7 +6,7 @@ export function sendJsonResponse(
   message: string = "",
   data?: any
 ) {
-  return res.status(statusCode).json({
+  return (res as any).status(statusCode).json({
     message,
     ...(data !== null && data !== undefined ? { data } : {}),
   });

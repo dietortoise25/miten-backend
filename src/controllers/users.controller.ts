@@ -1,6 +1,5 @@
-import type { Request, Response } from "express";
-import type { LoginRequest } from "../types/Request.ts";
-import type { LoginResponse, SuccessUserResponse } from "../types/Response.ts";
+import type { LoginRequest, CreateUserRequest } from "../types/Request.ts";
+import type { UserResponse, LoginResponse } from "../types/Response.ts";
 import {
   createUser as createUserApi,
   verifyUser,
@@ -12,16 +11,11 @@ import {
 import { generateToken } from "../utils/jwt.helper.ts";
 import AppError from "../utils/AppError.ts";
 
-interface CreateUserRequest {
-  email: string;
-  password: string;
-}
-
 export async function createUser(
-  req: Request<CreateUserRequest>,
-  res: Response<SuccessUserResponse>
+  req: CreateUserRequest,
+  res: UserResponse
 ) {
-  const { email, password } = req.body;
+  const { email, password } = (req as any).body;
   if (!email || !password) {
     throw new AppError(`Email and password are required`, 400, "Bad request");
   }
@@ -41,7 +35,7 @@ export async function login(req: LoginRequest, res: LoginResponse) {
   const result = await verifyUser(email, password);
 
   if (!result) {
-    return res.status(401).json({
+    return (res as any).status(401).json({
       message: "Unauthorized 邮箱或密码错误",
     });
   }

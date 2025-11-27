@@ -4,7 +4,7 @@ import {
   sendAddSuccessResponse,
 } from "../utils/response.helper.ts";
 import AppError from "../utils/AppError.ts";
-import type { Request } from "express";
+import type { ProductsRequest } from "../types/Request.ts";
 import {
   getProducts as getProductsApi,
   getProductById as getProductByIdApi,
@@ -15,7 +15,7 @@ import {
 } from "../services/product.service.ts";
 import { ProductResponse } from "../types/Response.ts";
 
-interface ProductsRequest extends Request {
+interface ExtendedProductsRequest extends ProductsRequest {
   query: {
     page?: string;
     limit?: string;
@@ -26,7 +26,7 @@ interface ProductsRequest extends Request {
   };
 }
 
-export async function getProducts(req: ProductsRequest, res: ProductResponse) {
+export async function getProducts(req: ExtendedProductsRequest, res: ProductResponse) {
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 5;
   const search = req.query.search || "";
@@ -41,7 +41,7 @@ export async function getProducts(req: ProductsRequest, res: ProductResponse) {
 }
 
 export async function getProductById(
-  req: ProductsRequest,
+  req: ExtendedProductsRequest,
   res: ProductResponse
 ) {
   const product = await getProductByIdApi(Number(req.params.productId));
@@ -54,7 +54,7 @@ export async function getProductById(
 }
 
 export async function deleteProductById(
-  req: ProductsRequest,
+  req: ExtendedProductsRequest,
   res: ProductResponse
 ) {
   const productId = Number(req.params.productId);
@@ -73,10 +73,10 @@ export async function deleteProductById(
 }
 
 export async function createProduct(
-  req: ProductsRequest,
+  req: ExtendedProductsRequest,
   res: ProductResponse
 ) {
-  const addProduct = req.body;
+  const addProduct = (req as any).body;
 
   if (!addProduct) {
     throw new AppError(`The product is required`, 400, "Bad request");
@@ -95,10 +95,10 @@ export async function createProduct(
 }
 
 export async function updateProduct(
-  req: ProductsRequest,
+  req: ExtendedProductsRequest,
   res: ProductResponse
 ) {
-  const updateProduct = req.body;
+  const updateProduct = (req as any).body;
 
   const updatedProductNumber = await updateProductApi(updateProduct);
 
@@ -109,7 +109,7 @@ export async function updateProduct(
   return sendSuccessResponse(res, updatedProductNumber);
 }
 
-export async function countProduct(req: ProductsRequest, res: ProductResponse) {
+export async function countProduct(req: ExtendedProductsRequest, res: ProductResponse) {
   const search = req.query.search;
   // if (!search) {
   //   throw new AppError(`The search is required`, 400, "Bad request");
