@@ -22,15 +22,30 @@ app.use("/v1", userRouter);
 
 app.use("/v1", productForCustomerRouter);
 
-app.use(async (req, res, next) => {
+app.use(async (req, res, next): Promise<void> => {
   const authorization = req.headers.authorization;
   if (!authorization) {
-    return res.status(401).json({
+    (res as any).status(401).json({
       message: "Unauthorized",
     });
+    return;
   }
 
-  const token = authorization.split(" ")[1];
+  const tokenParts = authorization.split(" ");
+  if (tokenParts.length !== 2) {
+    (res as any).status(401).json({
+      message: "Invalid authorization header format",
+    });
+    return;
+  }
+
+  const token = tokenParts[1];
+  if (!token) {
+    (res as any).status(401).json({
+      message: "Token is required",
+    });
+    return;
+  }
   await verifyToken(token);
 
   next();

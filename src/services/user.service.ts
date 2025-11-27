@@ -24,7 +24,11 @@ export async function verifyUser(email: string, password: string) {
     .from(usersTable)
     .where(eq(usersTable.email, email));
 
-  const result = await bcrypt.compare(password, user[0].password);
+  if (user.length === 0) {
+    return false;
+  }
+
+  const result = await bcrypt.compare(password, user[0]!.password);
 
   return result;
 }

@@ -57,5 +57,5 @@ export async function countProduct(search?: string) {
     .select({ count: count() })
     .from(productsTable)
     .where(search && search.trim() ? ilike(productsTable.name, `%${search}%`) : undefined);
-  return countNumber[0].count;
+  return countNumber[0]?.count || 0;
 }
