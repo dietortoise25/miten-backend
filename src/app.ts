@@ -22,7 +22,7 @@ app.use("/v1", userRouter);
 
 app.use("/v1", productForCustomerRouter);
 
-app.use(async (req: any, res: Response, next: NextFunction): Promise<void> => {
+app.use(async (req: any, res: Response, next: any): Promise<void> => {
   const authorization = req.headers?.authorization;
   if (!authorization) {
     (res as any).status(401).json({
