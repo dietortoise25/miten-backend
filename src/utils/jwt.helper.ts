@@ -1,0 +1,30 @@
+// import jwt from 'jsonwebtoken';
+import * as jose from "jose";
+import AppError from "./AppError.ts";
+
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
+
+export async function generateToken(data: {}) {
+  // jsonwebtoken version
+  // const token = jwt.sign({ data }, JWT_SECRET, { expiresIn: '20s' });
+
+  // Jose version
+  const token = await new jose.SignJWT({ data })
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("24h")
+    .sign(JWT_SECRET);
+
+  return token;
+}
+
+export async function verifyToken(token: string) {
+  try {
+    // jsonwebtoken version
+    // jwt.verify(token, JWT_SECRET);
+
+    // Jose version
+    await jose.jwtVerify(token, JWT_SECRET);
+  } catch (error: any) {
+    throw new AppError(error.message || "Invalid token", 401, error.name);
+  }
+}
