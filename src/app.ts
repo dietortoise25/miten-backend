@@ -48,7 +48,7 @@ app.use(async (req: any, res: Response, next: NextFunction): Promise<void> => {
   }
   await verifyToken(token);
 
-  next();
+  return next();
 });
 
 app.use("/v1", productRouterForAdmin);
